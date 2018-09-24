@@ -37,10 +37,6 @@ public class ItemsAdapter
     notifyDataSetChanged();
   }
 
-  public Item getItemAt(int position) {
-    return items.get(position);
-  }
-
   @NonNull
   @Override
   public ItemsAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -72,13 +68,13 @@ public class ItemsAdapter
     return items;
   }
 
-  public class ItemHolder
+  class ItemHolder
       extends RecyclerView.ViewHolder {
 
     ImageView itemThumbnail;
     TextView itemDescription;
 
-    public ItemHolder(View itemView) {
+    ItemHolder(View itemView) {
       super(itemView);
       itemThumbnail = itemView.findViewById(R.id.item_thumbnail);
       itemDescription = itemView.findViewById(R.id.item_description);
@@ -88,7 +84,7 @@ public class ItemsAdapter
         @Override
         public void onClick(View view) {
           if (listener != null) {
-            listener.onItemClick(view, getAdapterPosition());
+            listener.onItemClick(view, items.get(getAdapterPosition()));
           }
         }
       });
@@ -96,6 +92,6 @@ public class ItemsAdapter
   }
 
   public interface OnItemClickListener {
-    void onItemClick(View view, int position);
+    void onItemClick(View view, Item item);
   }
 }

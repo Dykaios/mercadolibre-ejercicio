@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Ejercicio</string>
     <string name="action_settings">Settings</string>
+    <string name="search_text">Buscar en mercado libre</string>
+    <string name="no_items_text">No se encontraron elementos</string>
+    <string name="description_text">Description</string>
+    <string name="item_thumbnail_content_description">Imagen del item</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="picture_size">%1$d Fotos</string>
+    <string name="title_text">Title</string>
 </resources>

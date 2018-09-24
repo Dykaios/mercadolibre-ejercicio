@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,12 +33,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mercadolibre.ejercicio.Constants.ITEMS_LIST;
+import static com.mercadolibre.ejercicio.Constants.POSITION;
+import static com.mercadolibre.ejercicio.Constants.RESULT_VS;
+import static com.mercadolibre.ejercicio.Constants.SEARCHING_VS;
+import static com.mercadolibre.ejercicio.Constants.SEARCH_TEXT;
+import static com.mercadolibre.ejercicio.Constants.SEARCH_VS;
+import static com.mercadolibre.ejercicio.Constants.WAITING_RESPONSE;
+
 /**
  * Created by César Pardo on 20/09/2018.
  */
 public class SearchFragment
     extends Fragment
-    implements Callback<Search> {
+    implements Callback<Search>, ItemsAdapter.OnItemClickListener {
 
   private static final int SEARCHING = 0;
   private static final int RESULT = 1;
@@ -52,6 +61,7 @@ public class SearchFragment
   private ViewSwitcher resultVS;
   private ItemsAdapter adapter;
   private GridLayoutManager glm;
+  private boolean waitingResponse;
 
   @Nullable
   @Override
@@ -82,23 +92,26 @@ public class SearchFragment
     RecyclerView resultRV = view.findViewById(R.id.result_recycler);
 
     adapter = new ItemsAdapter();
+    adapter.setOnClickListener(this);
 
     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
       glm = new GridLayoutManager(getContext(), 3);
     } else {
       glm = new GridLayoutManager(getContext(), 2);
     }
+
     resultRV.setLayoutManager(glm);
     resultRV.setAdapter(adapter);
 
-    if (savedInstanceState != null) {
-      callSearch(savedInstanceState.getString("SEARCH_TEXT", ""));
+    if (savedInstanceState != null && savedInstanceState.getBoolean(WAITING_RESPONSE)) {
+      callSearch(savedInstanceState.getString(SEARCH_TEXT, ""));
     }
   }
 
   private void callSearch(String query) {
+    waitingResponse = true;
     Endpoints endpoints = Service.getEndpoints();
-    // Hardcoded Site_Id para solo buscar en Mercado libre uruguay
+    // Hardcoded Site_Id, only search on Mercado libre uruguay
     Call<Search> call = endpoints.searchItem("MLU", query);
     call.enqueue(SearchFragment.this);
   }
@@ -116,21 +129,24 @@ public class SearchFragment
         resultVS.setDisplayedChild(EMPTY_LIST);
       }
     }
+    waitingResponse = false;
   }
 
   @Override
   public void onFailure(@NonNull Call<Search> call, @NonNull Throwable t) {
     Log.e("onFailure::", t.getMessage());
+    waitingResponse = false;
   }
 
   @Override
   public void onSaveInstanceState(@NonNull Bundle outState) {
-    outState.putParcelableArrayList("ITEM_LIST", (ArrayList<Item>) adapter.getItems());
-    outState.putInt("POSITION", glm.findFirstVisibleItemPosition());
-    outState.putInt("SEARCHVS", searchVS.getDisplayedChild());
-    outState.putInt("SEARCHINGVS", searchingVS.getDisplayedChild());
-    outState.putInt("RESULTVS", resultVS.getDisplayedChild());
-    outState.putString("SEARCH_TEXT", searchET.getText().toString());
+    outState.putParcelableArrayList(ITEMS_LIST, (ArrayList<Item>) adapter.getItems());
+    outState.putInt(POSITION, glm.findFirstVisibleItemPosition());
+    outState.putInt(SEARCH_VS, searchVS.getDisplayedChild());
+    outState.putInt(SEARCHING_VS, searchingVS.getDisplayedChild());
+    outState.putInt(RESULT_VS, resultVS.getDisplayedChild());
+    outState.putString(SEARCH_TEXT, searchET.getText().toString());
+    outState.putBoolean(WAITING_RESPONSE, waitingResponse);
 
     super.onSaveInstanceState(outState);
   }
@@ -139,12 +155,21 @@ public class SearchFragment
   public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
     super.onViewStateRestored(savedInstanceState);
     if (savedInstanceState != null) {
-      adapter.setItems(savedInstanceState.<Item>getParcelableArrayList("ITEM_LIST"));
-      glm.scrollToPosition(savedInstanceState.getInt("POSITION", 0));
-      searchVS.setDisplayedChild(savedInstanceState.getInt("SEARCHVS", 0));
-      searchingVS.setDisplayedChild(savedInstanceState.getInt("SEARCHINGVS", 0));
-      resultVS.setDisplayedChild(savedInstanceState.getInt("RESULTVS", 0));
-      searchET.setText(savedInstanceState.getString("SEARCH_TEXT", ""));
+      adapter.setItems(savedInstanceState.<Item>getParcelableArrayList(ITEMS_LIST));
+      glm.scrollToPosition(savedInstanceState.getInt(POSITION, 0));
+      searchVS.setDisplayedChild(savedInstanceState.getInt(SEARCH_VS, 0));
+      searchingVS.setDisplayedChild(savedInstanceState.getInt(SEARCHING_VS, 0));
+      resultVS.setDisplayedChild(savedInstanceState.getInt(RESULT_VS, 0));
+      searchET.setText(savedInstanceState.getString(SEARCH_TEXT, ""));
+      waitingResponse = savedInstanceState.getBoolean(WAITING_RESPONSE);
     }
+  }
+
+  @Override
+  public void onItemClick(View view, Item item) {
+    FragmentTransaction transaction = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
+    transaction.replace(R.id.fragment_container, DetailFragment.newInstance(item.getId()));
+    transaction.addToBackStack(null);
+    transaction.commit();
   }
 }

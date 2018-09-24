@@ -51,6 +51,7 @@ dependencies {
     //Library used to download and load into view images.
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
     testImplementation "org.robolectric:robolectric:3.8"
 

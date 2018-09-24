@@ -12,15 +12,17 @@ public class Item
     implements Parcelable {
   private String id;
   private String title;
-  private List<String> descriptions;
+  private List<Description> descriptions;
   private String thumbnail;
   private List<Picture> pictures;
 
-  private Item(Parcel in) {
+
+  protected Item(Parcel in) {
     id = in.readString();
     title = in.readString();
-    descriptions = in.createStringArrayList();
+    descriptions = in.createTypedArrayList(Description.CREATOR);
     thumbnail = in.readString();
+    pictures = in.createTypedArrayList(Picture.CREATOR);
   }
 
   public static final Creator<Item> CREATOR = new Creator<Item>() {
@@ -51,11 +53,11 @@ public class Item
     this.title = title;
   }
 
-  public List<String> getDescriptions() {
+  public List<Description> getDescriptions() {
     return descriptions;
   }
 
-  public void setDescriptions(List<String> descriptions) {
+  public void setDescriptions(List<Description> descriptions) {
     this.descriptions = descriptions;
   }
 
@@ -84,7 +86,8 @@ public class Item
   public void writeToParcel(Parcel parcel, int i) {
     parcel.writeString(id);
     parcel.writeString(title);
-    parcel.writeStringList(descriptions);
+    parcel.writeTypedList(descriptions);
     parcel.writeString(thumbnail);
+    parcel.writeTypedList(pictures);
   }
 }
