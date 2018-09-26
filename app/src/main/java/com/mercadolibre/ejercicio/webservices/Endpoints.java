@@ -1,8 +1,8 @@
 package com.mercadolibre.ejercicio.webservices;
 
-import com.mercadolibre.ejercicio.models.Description;
-import com.mercadolibre.ejercicio.models.Item;
-import com.mercadolibre.ejercicio.models.Search;
+import com.mercadolibre.ejercicio.data.models.Description;
+import com.mercadolibre.ejercicio.data.models.Item;
+import com.mercadolibre.ejercicio.data.models.Search;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

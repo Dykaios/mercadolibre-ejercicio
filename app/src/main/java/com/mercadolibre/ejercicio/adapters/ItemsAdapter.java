@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mercadolibre.ejercicio.R;
-import com.mercadolibre.ejercicio.models.Item;
+import com.mercadolibre.ejercicio.data.models.Item;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,10 +26,6 @@ public class ItemsAdapter
 
   public void setOnClickListener(OnItemClickListener listener) {
     this.listener = listener;
-  }
-
-  public ItemsAdapter() {
-    items = new ArrayList<>();
   }
 
   public void setItems(List<Item> items) {
@@ -61,11 +57,18 @@ public class ItemsAdapter
 
   @Override
   public int getItemCount() {
+    if (items == null) {
+      items = new ArrayList<>();
+    }
     return items.size();
   }
 
   public List<Item> getItems() {
+    if (items == null) {
+      items = new ArrayList<>();
+    }
     return items;
+
   }
 
   class ItemHolder

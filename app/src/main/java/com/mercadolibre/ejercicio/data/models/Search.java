@@ -1,4 +1,4 @@
-package com.mercadolibre.ejercicio.models;
+package com.mercadolibre.ejercicio.data.models;
 
 import java.util.List;
 

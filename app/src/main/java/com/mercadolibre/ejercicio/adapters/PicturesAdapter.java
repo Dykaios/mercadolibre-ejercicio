@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.mercadolibre.ejercicio.R;
-import com.mercadolibre.ejercicio.models.Picture;
+import com.mercadolibre.ejercicio.data.models.Picture;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
