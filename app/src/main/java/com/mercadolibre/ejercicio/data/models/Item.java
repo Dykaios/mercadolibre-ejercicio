@@ -16,8 +16,7 @@ public class Item
   private String thumbnail;
   private List<Picture> pictures;
 
-
-  protected Item(Parcel in) {
+  private Item(Parcel in) {
     id = in.readString();
     title = in.readString();
     descriptions = in.createTypedArrayList(Description.CREATOR);

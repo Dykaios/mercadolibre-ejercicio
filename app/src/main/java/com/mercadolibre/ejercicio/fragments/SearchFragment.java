@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -67,7 +68,28 @@ public class SearchFragment
     searchingVS = view.findViewById(R.id.searching_view_switcher);
     resultVS = view.findViewById(R.id.result_view_switcher);
 
+    //Use a LiveData to persist data against rotation screen.
     SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+    searchViewModel.init();
+    searchViewModel.getSearch().observe(Objects.requireNonNull(this), search -> {
+      // update UI
+      if (search == null) {
+        Snackbar.make(view, R.string.error_getting_search, Snackbar.LENGTH_LONG).show();
+        searchVS.setDisplayedChild(SEARCHING);
+        searchingVS.setDisplayedChild(NO_SEARCH);
+      } else {
+        glm.scrollToPosition(scrollPosition);
+        searchVS.setDisplayedChild(RESULT);
+        searchingVS.setDisplayedChild(NO_SEARCH);
+        List<Item> items = Objects.requireNonNull(search).getResults();
+        if (null != items && items.size() > 0) {
+          resultVS.setDisplayedChild(ITEM_LIST);
+          adapter.setItems(items);
+        } else {
+          resultVS.setDisplayedChild(EMPTY_LIST);
+        }
+      }
+    });
 
     searchET.setOnEditorActionListener((textView, i, keyEvent) -> {
       if (EditorInfo.IME_ACTION_SEARCH == i) {
@@ -91,21 +113,6 @@ public class SearchFragment
 
     resultRV.setLayoutManager(glm);
     resultRV.setAdapter(adapter);
-
-    searchViewModel.init();
-    searchViewModel.getSearch().observe(Objects.requireNonNull(this), search -> {
-      // update UI
-      glm.scrollToPosition(scrollPosition);
-      searchVS.setDisplayedChild(RESULT);
-      searchingVS.setDisplayedChild(NO_SEARCH);
-      List<Item> items = Objects.requireNonNull(search).getResults();
-      if (null != items && items.size() > 0) {
-        resultVS.setDisplayedChild(ITEM_LIST);
-        adapter.setItems(items);
-      } else {
-        resultVS.setDisplayedChild(EMPTY_LIST);
-      }
-    });
   }
 
   @Override

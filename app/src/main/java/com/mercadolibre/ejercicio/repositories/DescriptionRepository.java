@@ -1,7 +1,8 @@
-package com.mercadolibre.ejercicio.data.repositories;
+package com.mercadolibre.ejercicio.repositories;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.mercadolibre.ejercicio.data.models.Description;
 import com.mercadolibre.ejercicio.webservices.Endpoints;
@@ -15,6 +16,7 @@ import retrofit2.Response;
  * Created by César Pardo on 25/09/2018.
  */
 public class DescriptionRepository {
+  private static final String TAG = "DescriptionRepository::";
   private Endpoints endpoints;
 
   public DescriptionRepository() {
@@ -31,7 +33,8 @@ public class DescriptionRepository {
 
       @Override
       public void onFailure(@NonNull Call<Description> call, @NonNull Throwable t) {
-
+        Log.e(TAG, t.getMessage());
+        result.postValue(null);
       }
     });
   }

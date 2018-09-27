@@ -47,8 +47,9 @@ public class ItemsAdapter
     Picasso
         .get()
         .load(item.getThumbnail())
-        //.placeholder(R.drawable.thumnail)
-        //.error(R.drawable.thumnail)
+        //I don't have resources for this
+        //.placeholder(R.drawable.placeholder) //Display a place holder if the image it´s not loaded
+        //.error(R.drawable.error) //Display a error icon if something went wrong.
         .resize(92, 92)
         .centerCrop()
         .into(holder.itemThumbnail);
@@ -63,14 +64,6 @@ public class ItemsAdapter
     return items.size();
   }
 
-  public List<Item> getItems() {
-    if (items == null) {
-      items = new ArrayList<>();
-    }
-    return items;
-
-  }
-
   class ItemHolder
       extends RecyclerView.ViewHolder {
 
@@ -82,13 +75,10 @@ public class ItemsAdapter
       itemThumbnail = itemView.findViewById(R.id.item_thumbnail);
       itemDescription = itemView.findViewById(R.id.item_description);
 
-      //Se notifica al fragment que un elemento fue seleccionado.
-      itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          if (listener != null) {
-            listener.onItemClick(view, items.get(getAdapterPosition()));
-          }
+      //Notified that the item its clicked.
+      itemView.setOnClickListener(view -> {
+        if (listener != null) {
+          listener.onItemClick(view, items.get(getAdapterPosition()));
         }
       });
     }

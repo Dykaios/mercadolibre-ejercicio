@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -75,34 +76,46 @@ public class DetailFragment extends Fragment {
 
     picturesVP.setAdapter(adapter);
 
+    //Use a LiveData to persist data against rotation screen.
     ItemViewModel itemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
     itemViewModel.init(itemId);
+    //Get abstract about how the data its obtained.
     itemViewModel.getItem().observe(this, item -> {
       //Update UI
       itemSearchEnded = true;
-      List<Picture> pictures = Objects.requireNonNull(item).getPictures();
-      if (pictures.size() > 0) {
-        adapter.setItems(pictures);
-      }
-      picturesCount.setText(getString(R.string.picture_size, pictures.size()));
-      title.setText(item.getTitle());
+      if (item == null) {
+        Snackbar.make(view, R.string.error_getting_item, Snackbar.LENGTH_LONG).show();
+        Objects.requireNonNull(getActivity()).onBackPressed();
+      } else {
+        List<Picture> pictures = Objects.requireNonNull(item).getPictures();
+        if (pictures.size() > 0) {
+          adapter.setItems(pictures);
+        }
+        picturesCount.setText(getString(R.string.picture_size, pictures.size()));
+        title.setText(item.getTitle());
 
-      if (descriptionSearchEnded && loadingViewSwitcher.getDisplayedChild() == 0) {
-        loadingViewSwitcher.setDisplayedChild(1);
-      }
+        if (descriptionSearchEnded && loadingViewSwitcher.getDisplayedChild() == 0) {
+          loadingViewSwitcher.setDisplayedChild(1);
+        }
 
-      picturesVP.setCurrentItem(picturePosition);
+        picturesVP.setCurrentItem(picturePosition);
+      }
     });
 
     DescriptionViewModel descriptionViewModel = ViewModelProviders.of(this).get(DescriptionViewModel.class);
     descriptionViewModel.init(itemId);
     descriptionViewModel.getDescription().observe(this, description -> {
       //Update UI
-      descriptionSearchEnded = true;
-      loadingViewSwitcher.setDisplayedChild(1);
-      descriptionText.setText(Objects.requireNonNull(description).getPlain_text());
-      if (itemSearchEnded && loadingViewSwitcher.getDisplayedChild() == 0) {
+      if (description == null) {
+        Snackbar.make(view, R.string.error_getting_description, Snackbar.LENGTH_LONG).show();
+        Objects.requireNonNull(getActivity()).onBackPressed();
+      } else {
+        descriptionSearchEnded = true;
         loadingViewSwitcher.setDisplayedChild(1);
+        descriptionText.setText(Objects.requireNonNull(description).getPlain_text());
+        if (itemSearchEnded && loadingViewSwitcher.getDisplayedChild() == 0) {
+          loadingViewSwitcher.setDisplayedChild(1);
+        }
       }
     });
   }

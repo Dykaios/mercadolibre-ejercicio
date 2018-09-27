@@ -59,19 +59,21 @@ public class PicturesAdapter
     Picasso
         .get()
         .load(item.getUrl())
-        //.placeholder(R.drawable.thumnail)
-        //.error(R.drawable.thumnail)
+        //I don't have resources for this
+        //.placeholder(R.drawable.placeholder) //Display a place holder if the image it´s not loaded
+        //.error(R.drawable.error) //Display a error icon if something went wrong.
         .resize(Integer.parseInt(size[0]), Integer.parseInt(size[1]))
         .centerCrop()
         .into(itemPicture, new Callback() {
           @Override
           public void onSuccess() {
+            //Display a progress bar till the item its loaded into the view.
             viewSwitcher.setDisplayedChild(1);
           }
 
           @Override
           public void onError(Exception e) {
-
+            viewSwitcher.setDisplayedChild(1);
           }
         });
     container.addView(layout);

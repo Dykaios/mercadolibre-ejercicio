@@ -14,13 +14,12 @@ public class MainActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    if (savedInstanceState != null) {
-      return;
+    //If its coming from screen rotation avoid add the fragment again
+    if (savedInstanceState == null) {
+      getSupportFragmentManager()
+          .beginTransaction()
+          .add(R.id.fragment_container, new SearchFragment())
+          .commit();
     }
-    
-    getSupportFragmentManager()
-        .beginTransaction()
-        .add(R.id.fragment_container, new SearchFragment())
-        .commit();
   }
 }

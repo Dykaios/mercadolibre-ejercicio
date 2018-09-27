@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.mercadolibre.ejercicio.data.models.Search;
-import com.mercadolibre.ejercicio.data.repositories.SearchRepository;
+import com.mercadolibre.ejercicio.repositories.SearchRepository;
 
 /**
  * Created by César Pardo on 25/09/2018.

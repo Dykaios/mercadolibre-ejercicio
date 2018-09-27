@@ -10,4 +10,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="picture_size">%1$d Fotos</string>
     <string name="title_text">Title</string>
+    <string name="error_getting_item">Se produjo un error al obtener el item, por favor intentelo más tarde.</string>
+    <string name="error_getting_description">Se produjo un error al obtener la descripción, por favor intentelo más tarde.</string>
+    <string name="error_getting_search">Se produjo un error al obtener los items, por favor intentelo más tarde.</string>
 </resources>
